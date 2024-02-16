@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./src/utils/db');
+const beerRoutes = require('./src/routes/beerRoutes');
 dotenv.config();
 
 
@@ -12,6 +13,8 @@ const app = express();
 app.get('/', (req, res) => {
     res.send('Hello from the back!');
 });
+
+app.use('/api/beers', beerRoutes);
 
 app.use(cors({
     origin: 'http://localhost:3000',
