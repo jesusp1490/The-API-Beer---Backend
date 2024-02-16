@@ -1,46 +1,31 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./src/utils/db');
 const beerRoutes = require('./src/api/routes/beerRoutes');
+const dotenv = require('dotenv');
 dotenv.config();
-
 const app = express();
 
-// Rutas
-app.get('/', (req, res) => {
-    res.send('Hello from the back!');
+// Middleware para analizar el cuerpo de las solicitudes entrantes
+app.use(bodyParser.json());
+
+// Conexión a MongoDB
+mongoose.connect('mongodb://localhost:27017/beerDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+    console.log('Conectado a MongoDB');
+});
+
+// Rutas de la API de cervezas
 app.use('/api/beers', beerRoutes);
 
-app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-}));
-
-// Importar la configuración de conexión a la base de datos
-require('./src/utils/db');
-connectDB();
-
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(() => console.log("Conectado a MongoDB"))
-    .catch((error) => console.error("Error conectado a MongoDB", error));
-
-//Manejo de errores
-app.use((req, res, next) => {
-    res.status(404).send("Esa ruta no existe");
-});
-
-// Iniciar el servidor
+// Inicia el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);
 });
-
-module.exports = app;

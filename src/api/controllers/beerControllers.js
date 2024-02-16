@@ -1,21 +1,19 @@
 const Beer = require('../models/Beer');
 const Joi = require('joi');
-const express = require('express');
-const router = express.Router();
 
 // Definir el esquema de validación para una cerveza
 const beerSchema = Joi.object({
     name: Joi.string().required(),
     category: Joi.string().required(),
     country: Joi.string().required(),
-    ingredients: Joi.array().items(Joi.string()).required(),
+    ingredients: Joi.array().items(Joi.string()).required(), 
     price: Joi.number().required(),
     description: Joi.string().required(),
-    imageUrl: Joi.string().uri() // Actualizado para incluir la URL de la imagen
+    imageUrl: Joi.string().uri()
 });
 
 // Obtener todas las cervezas
-router.getAllBeers = async (req, res) => {
+exports.getAllBeers = async (req, res) => {
     try {
         const beers = await Beer.find();
         res.json(beers);
@@ -25,7 +23,7 @@ router.getAllBeers = async (req, res) => {
 };
 
 // Obtener una cerveza por su ID
-router.getBeerById = async (req, res) => {
+exports.getBeerById = async (req, res) => {
     try {
         const beer = await Beer.findById(req.params.id);
         if (!beer) {
@@ -38,7 +36,7 @@ router.getBeerById = async (req, res) => {
 };
 
 // Agregar una nueva cerveza con imagen
-router.addBeerWithImage = async (req, res) => {
+exports.addBeerWithImage = async (req, res) => {
     const { error } = beerSchema.validate(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message });
@@ -48,10 +46,10 @@ router.addBeerWithImage = async (req, res) => {
         name: req.body.name,
         category: req.body.category,
         country: req.body.country,
-        ingredients: req.body.ingredients,
+        ingredients: req.body.ingredients, 
         price: req.body.price,
         description: req.body.description,
-        imageUrl: req.body.imageUrl // Actualizado para incluir la URL de la imagen
+        imageUrl: req.body.imageUrl
     });
 
     try {
@@ -62,8 +60,10 @@ router.addBeerWithImage = async (req, res) => {
     }
 };
 
+
+
 // Actualizar una cerveza existente
-router.updateBeer = async (req, res) => {
+exports.updateBeer = async (req, res) => {
     try {
         const beer = await Beer.findById(req.params.id);
         if (!beer) {
@@ -84,7 +84,7 @@ router.updateBeer = async (req, res) => {
 };
 
 // Eliminar una cerveza existente
-router.deleteBeer = async (req, res) => {
+exports.deleteBeer = async (req, res) => {
     try {
         const beer = await Beer.findById(req.params.id);
         if (!beer) {
@@ -96,5 +96,3 @@ router.deleteBeer = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
-module.exports = router;

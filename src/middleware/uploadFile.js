@@ -1,5 +1,8 @@
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 // Configuración de Cloudinary
 cloudinary.config({
@@ -34,7 +37,7 @@ const uploadImageToCloudinary = (req, res, next) => {
             }
 
             // Agregar la URL de la imagen a la solicitud
-            req.imageUrl = result.secure_url;
+            req.body.imageUrl = result.secure_url;
             next();
         });
     });
