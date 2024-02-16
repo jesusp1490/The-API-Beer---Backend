@@ -1,9 +1,7 @@
-const express = require('express');
-const router = express.Router();
 const Beer = require('../models/Beer');
 const Joi = require('joi');
-const cloudinary = require('../../app');
-const upload = require('../middleware/uploadFile');
+const express = require('express');
+const router = express.Router();
 
 // Definir el esquema de validación para una cerveza
 const beerSchema = Joi.object({
@@ -17,7 +15,7 @@ const beerSchema = Joi.object({
 });
 
 // Obtener todas las cervezas
-exports.getAllBeers = async (req, res) => {
+router.getAllBeers = async (req, res) => {
     try {
         const beers = await Beer.find();
         res.json(beers);
@@ -27,7 +25,7 @@ exports.getAllBeers = async (req, res) => {
 };
 
 // Obtener una cerveza por su ID
-exports.getBeerById = async (req, res) => {
+router.getBeerById = async (req, res) => {
     try {
         const beer = await Beer.findById(req.params.id);
         if (!beer) {
@@ -40,7 +38,7 @@ exports.getBeerById = async (req, res) => {
 };
 
 // Agregar una nueva cerveza con imagen
-exports.addBeerWithImage = async (req, res) => {
+router.addBeerWithImage = async (req, res) => {
     const { error } = beerSchema.validate(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message });
@@ -65,7 +63,7 @@ exports.addBeerWithImage = async (req, res) => {
 };
 
 // Actualizar una cerveza existente
-exports.updateBeer = async (req, res) => {
+router.updateBeer = async (req, res) => {
     try {
         const beer = await Beer.findById(req.params.id);
         if (!beer) {
@@ -86,7 +84,7 @@ exports.updateBeer = async (req, res) => {
 };
 
 // Eliminar una cerveza existente
-exports.deleteBeer = async (req, res) => {
+router.deleteBeer = async (req, res) => {
     try {
         const beer = await Beer.findById(req.params.id);
         if (!beer) {

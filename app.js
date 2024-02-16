@@ -3,9 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./src/utils/db');
-const beerRoutes = require('./src/routes/beerRoutes');
+const beerRoutes = require('./src/api/routes/beerRoutes');
 dotenv.config();
-
 
 const app = express();
 
@@ -22,16 +21,6 @@ app.use(cors({
     credentials: true,
 }));
 
-const cloudinary = require('cloudinary').v2;
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-module.exports = cloudinary;
-
 // Importar la configuración de conexión a la base de datos
 require('./src/utils/db');
 connectDB();
@@ -41,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true
 })
     .then(() => console.log("Conectado a MongoDB"))
-    .catch((error) => console.error("Erro conectado a MongoDB", error))
+    .catch((error) => console.error("Error conectado a MongoDB", error));
 
 //Manejo de errores
 app.use((req, res, next) => {
@@ -53,4 +42,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);
 });
-
