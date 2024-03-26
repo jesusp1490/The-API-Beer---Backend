@@ -35,6 +35,17 @@ exports.getBeerById = async (req, res) => {
     }
 };
 
+// Obtener cervezas por país
+exports.getBeersByCountry = async (req, res) => {
+    try {
+        const country = req.query.country;
+        const beers = await Beer.find({ country: country });
+        res.json(beers);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Agregar una nueva cerveza con imagen
 exports.addBeerWithImage = async (req, res) => {
     const { error } = beerSchema.validate(req.body);
